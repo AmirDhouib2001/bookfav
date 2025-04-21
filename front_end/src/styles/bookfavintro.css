@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap');
+
+.bookfav-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #1abc9c 0%, #8e44ad 50%, #bfc9ca 100%);
+  padding: 2.5rem;
+  border-radius: 20px;
+  max-width: 1100px;
+  margin: 2rem auto 3rem auto;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  color: #f8f8f8;
+  backdrop-filter: blur(8px);
+  flex-wrap: wrap;
+}
+
+.intro-logo img {
+  width: 180px;
+  height: auto;
+  margin-right: 2rem;
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.07);
+  padding: 0.6rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition: transform 0.3s ease;
+}
+
+.intro-logo img:hover {
+  transform: scale(1.05);
+}
+
+.intro-text-block {
+  flex: 1;
+  min-width: 280px;
+  font-family: 'Quicksand', 'Segoe UI', sans-serif;
+}
+
+.intro-text-block h2 {
+  font-size: 1.7rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #f7d354; /* jaune clair */
+}
+
+.intro-text-block p {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  margin-bottom: 0.7rem;
+  color: #f2f2f2;
+}
+
+.bookfav-name {
+  font-style: italic;
+  color: #1abc9c;
+  font-weight: 600;
+}

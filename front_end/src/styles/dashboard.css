@@ -1,0 +1,113 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: #0d0d0d;
+    color: #f0f0f0;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .dashboard {
+    padding: 2rem;
+    max-width: 1650px; /* ✅ page moins large */
+    margin: auto;
+  }
+  
+  .section-title {
+    color: #1abc9c;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+  
+  .scroll-section {
+    margin-bottom: 3rem;
+  }
+  
+  .scroll-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 1rem;
+  }
+  
+  .book-card {
+    min-width: 160px;
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    padding: 1rem;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  
+  .book-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  
+  .book-card h4 {
+    margin: 0.5rem 0 0.25rem;
+    font-size: 1rem;
+  }
+  
+  .book-card p {
+    font-size: 0.9rem;
+    color: #bbb;
+  }
+  
+  .actions {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .actions button {
+    background-color: #1abc9c;
+    border: none;
+    color: black;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Header modernisé */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1f1f1f;
+    padding: 1.2rem 2rem;
+  }
+  
+  .left-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  
+  .logo-img {
+    width: 50px; /* ✅ plus visible */
+    height: 50px;
+  }
+  
+  .logo-text {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #1abc9c;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 1.2rem;
+  }
+  
+  .nav-links a {
+    color: #f0f0f0;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .nav-links a:hover {
+    color: #1abc9c;
+  }
+  

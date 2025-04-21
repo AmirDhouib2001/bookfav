@@ -1,0 +1,19 @@
+# Environnement Python
+venv/
+__pycache__/
+*.pyc
+
+# Node modules
+node_modules/
+
+
+# Vite / React
+dist/
+.env
+
+# Logs
+*.log
+
+# PyCharm / VSCode
+.idea/
+.vscode/
