@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./back_end
+    ports:
+      - "5001:5000"
+    volumes:
+      - ./back_end:/app
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=postgresql://postgres:0000@db:5432/books_db
+    depends_on:
+      - db
+    networks:
+      - bookfav-network
+
+  frontend:
+    build: ./front_end
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./front_end:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:5001/api
+    depends_on:
+      - backend
+    networks:
+      - bookfav-network
+
+  db:
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=0000
+      - POSTGRES_DB=books_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - bookfav-network
+
+networks:
+  bookfav-network:
+    driver: bridge
+
+volumes:
+  postgres-data: 

@@ -1,8 +1,16 @@
-import { Link } from 'react-router-dom'
-import logo from '../logo.png'
-import '../styles/dashboard.css'
+import * as React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import logo from '../logo.png';
+import '../styles/Header.css';
 
-function Header() {
+const Header: React.FC = () => {
+  const location = useLocation();
+  
+  // Fonction pour déterminer si un lien est actif
+  const isActive = (path: string) => {
+    return location.pathname === path ? 'active' : '';
+  };
+  
   return (
     <header className="header">
       <div className="left-logo">
@@ -11,11 +19,18 @@ function Header() {
       </div>
 
       <nav className="nav-links">
-        <Link to="/catalogue">Catalogue</Link>
-        <Link to="/account">Mon compte</Link>
+        <Link to="/" className={isActive('/')}>
+          Accueil
+        </Link>
+        <Link to="/catalogue" className={isActive('/catalogue')}>
+          Catalogue
+        </Link>
+        <Link to="/dashboard" className={isActive('/dashboard')}>
+          Dashboard
+        </Link>
       </nav>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
