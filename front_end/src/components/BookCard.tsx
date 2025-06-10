@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export interface BookProps {
   isbn: string;
@@ -10,6 +11,8 @@ export interface BookProps {
   image_url_s: string;
   image_url_m: string;
   image_url_l: string;
+  genre?: string;
+  description?: string;
 }
 
 const BookCard: React.FC<BookProps> = ({ 
@@ -20,7 +23,9 @@ const BookCard: React.FC<BookProps> = ({
   publisher, 
   image_url_s,
   image_url_m,
-  image_url_l 
+  image_url_l,
+  genre,
+  description
 }) => {
   const [imageError, setImageError] = useState(false);
   const [imageSizeIndex, setImageSizeIndex] = useState(1); // 0=S, 1=M, 2=L
@@ -44,21 +49,24 @@ const BookCard: React.FC<BookProps> = ({
   
   return (
     <div className="book-card">
-      <div className="book-cover">
-        <img 
-          src={imageError ? placeholderImage : imageUrls[imageSizeIndex]} 
-          alt={`Couverture de ${title}`} 
-          onError={handleImageError}
-        />
-      </div>
-      <div className="book-info">
-        <h3>{title}</h3>
-        <p className="author">par {author}</p>
-        <p className="details">
-          <span className="year">{year}</span>
-          <span className="publisher">{publisher}</span>
-        </p>
-      </div>
+      <Link to={`/book/${isbn}`} className="book-link">
+        <div className="book-cover">
+          <img 
+            src={imageError ? placeholderImage : imageUrls[imageSizeIndex]} 
+            alt={`Couverture de ${title}`} 
+            onError={handleImageError}
+          />
+        </div>
+        <div className="book-info">
+          <h3>{title}</h3>
+          <p className="author">par {author}</p>
+          <p className="details">
+            <span className="year">{year}</span>
+            <span className="publisher">{publisher}</span>
+          </p>
+          {genre && <p className="genre">Genre: {genre}</p>}
+        </div>
+      </Link>
     </div>
   );
 };

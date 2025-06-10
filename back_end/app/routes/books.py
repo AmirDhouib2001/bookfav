@@ -3,6 +3,7 @@ from app.models import Book
 from app import db
 import time
 import sys
+from sqlalchemy import or_, func
 
 books_bp = Blueprint("books", __name__)
 
@@ -174,18 +175,60 @@ def get_book_by_isbn(isbn):
 @books_bp.route("/search", methods=["GET"])
 def search_books():
     try:
-        query = request.args.get('q', '')
+        # Récupérer tous les paramètres de recherche
+        title = request.args.get('title', '')
+        author = request.args.get('author', '')
+        genre = request.args.get('genre', '')
+        description = request.args.get('description', '')
+        query = request.args.get('q', '')  # Recherche générale
         
-        if not query:
-            return jsonify([])
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 12, type=int)
         
-        # Recherche par titre ou auteur
-        books = Book.query.filter(
-            (Book.title.ilike(f'%{query}%')) | 
-            (Book.author.ilike(f'%{query}%'))
-        ).limit(100).all()
+        # Limiter per_page à 100 maximum pour éviter les problèmes de performance
+        per_page = min(per_page, 100)
         
-        return jsonify([book.to_dict() for book in books])
+        # Construire la requête de base
+        book_query = Book.query
+        
+        # Appliquer les filtres de recherche si fournis
+        if query:
+            book_query = book_query.filter(
+                (Book.title.ilike(f'%{query}%')) | 
+                (Book.author.ilike(f'%{query}%')) |
+                (Book.genre.ilike(f'%{query}%')) |
+                (Book.description.ilike(f'%{query}%'))
+            )
+        
+        if title:
+            book_query = book_query.filter(Book.title.ilike(f'%{title}%'))
+            
+        if author:
+            book_query = book_query.filter(Book.author.ilike(f'%{author}%'))
+            
+        if genre:
+            book_query = book_query.filter(Book.genre.ilike(f'%{genre}%'))
+            
+        if description:
+            book_query = book_query.filter(Book.description.ilike(f'%{description}%'))
+        
+        # Compter le nombre total de résultats
+        total_books = book_query.count()
+        
+        # Paginer les résultats
+        books = book_query.paginate(page=page, per_page=per_page, error_out=False)
+        
+        # Convertir les objets en dictionnaires
+        books_list = [book.to_dict() for book in books.items]
+        
+        response_data = {
+            'books': books_list,
+            'total': books.total,
+            'pages': books.pages,
+            'current_page': books.page
+        }
+        
+        return jsonify(response_data)
     except Exception as e:
         print(f"ERREUR dans search_books: {str(e)}")
         return jsonify({'error': str(e)}), 500
@@ -220,3 +263,21 @@ def delete_book(book_id):
     db.session.delete(book)
     db.session.commit()
     return jsonify({"message": "Livre supprimé avec succès"})
+
+@books_bp.route("/genres", methods=["GET"])
+def get_genres():
+    """Récupère la liste des genres disponibles dans la base de données."""
+    try:
+        # Récupérer tous les genres uniques
+        genres = db.session.query(Book.genre).distinct().all()
+        
+        # Extraire les valeurs de genre des tuples renvoyés par la requête
+        genre_list = [genre[0] for genre in genres if genre[0]]
+        
+        # Trier les genres par ordre alphabétique
+        genre_list.sort()
+        
+        return jsonify(genre_list)
+    except Exception as e:
+        print(f"Erreur lors de la récupération des genres: {str(e)}")
+        return jsonify({"error": "Une erreur est survenue lors de la récupération des genres"}), 500

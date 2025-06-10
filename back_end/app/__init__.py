@@ -17,19 +17,14 @@ def create_app() -> Flask:
     print("✅ SQLAlchemy initialisé")
     
     from app.routes.books import books_bp
+    from app.routes.auth import auth_bp
+    
     app.register_blueprint(books_bp, url_prefix="/api/books")
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
     print("✅ Routes API enregistrées")
 
-    # Créer les tables de la base de données
-    with app.app_context():
-        db.create_all()
-        print("✅ Tables de base de données créées")
-        
-        # Charger les livres depuis le CSV seulement s'il n'y a pas de livres dans la base
-        from app.utils import load_books_from_csv
-        print("Vérification des livres dans la base de données...")
-        loaded_count = load_books_from_csv(limit=100, force_reload=False)
-        print(f"✅ Base de données contient {loaded_count} livres")
+    # Ne pas créer les tables et ne pas charger les données du CSV
+    print("✅ L'application utilise directement les tables existantes dans la base de données")
 
     @app.route('/api/health')
     def health_check():
