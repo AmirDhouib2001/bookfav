@@ -23,8 +23,8 @@ class Book(db.Model):
     def __repr__(self):
         return f'<Book {self.title}>'
     
-    def to_dict(self):
-        return {
+    def to_dict(self, include_ratings=False):
+        book_data = {
             'isbn': self.isbn,
             'title': self.title,
             'author': self.author,
@@ -36,6 +36,21 @@ class Book(db.Model):
             'genre': self.genre,
             'description': self.description
         }
+        
+        if include_ratings:
+            # Calculer les statistiques de notation
+            from sqlalchemy import func
+            ratings_stats = db.session.query(
+                func.count(UserBookRating.id).label('total_ratings'),
+                func.avg(UserBookRating.rating).label('average_rating')
+            ).filter(UserBookRating.isbn == self.isbn).first()
+            
+            book_data['rating_stats'] = {
+                'total_ratings': ratings_stats.total_ratings or 0,
+                'average_rating': float(ratings_stats.average_rating or 0)
+            }
+        
+        return book_data
 
 class Rating(db.Model):
     user_id = db.Column('User-ID', db.Integer, primary_key=True)
@@ -71,7 +86,7 @@ class User(db.Model):
             'id': self.id,
             'location': self.location,
             'age': self.age
-        }
+        } 
 
 class AuthUser(db.Model):
     __tablename__ = 'auth_users'
@@ -86,6 +101,7 @@ class AuthUser(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     preferences = db.Column(db.JSON, default={})
     favorite_genres = db.Column(db.ARRAY(db.String), default=[])
+    favorite_authors = db.Column(db.ARRAY(db.String), default=[])
     reading_history = db.Column(db.JSON, default=[])
     profile_image_url = db.Column(db.String(255))
     role = db.Column(db.String(20), default='user')
@@ -130,7 +146,8 @@ class AuthUser(db.Model):
             'is_active': self.is_active,
             'profile_image_url': self.profile_image_url,
             'role': self.role,
-            'favorite_genres': self.favorite_genres
+            'favorite_genres': self.favorite_genres,
+            'favorite_authors': self.favorite_authors
         }
 
 
@@ -172,4 +189,41 @@ class UserSession(db.Model):
         if user_id:
             query = query.filter_by(user_id=user_id)
         query.delete()
-        db.session.commit() 
+        db.session.commit()
+
+
+class UserBookRating(db.Model):
+    __tablename__ = 'user_book_ratings'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('auth_users.user_id', ondelete='CASCADE'), nullable=False)
+    isbn = db.Column(db.String(20), db.ForeignKey('books.isbn', ondelete='CASCADE'), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    review = db.Column(db.Text)
+    created_at = db.Column(db.TIMESTAMP, default=datetime.utcnow)
+    updated_at = db.Column(db.TIMESTAMP, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relations
+    user = db.relationship('AuthUser', backref='book_ratings')
+    book = db.relationship('Book', backref='user_ratings')
+    
+    # Contraintes
+    __table_args__ = (
+        db.UniqueConstraint('user_id', 'isbn', name='unique_user_book_rating'),
+        db.CheckConstraint('rating >= 1 AND rating <= 5', name='check_rating_range'),
+        {'extend_existing': True}
+    )
+    
+    def __repr__(self):
+        return f'<UserBookRating {self.user_id}-{self.isbn}: {self.rating}>'
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'isbn': self.isbn,
+            'rating': self.rating,
+            'review': self.review,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        } 

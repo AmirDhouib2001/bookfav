@@ -141,11 +141,11 @@
 }
 
 /* Styles pour la section des genres */
-.genre-group {
+.genre-group, .author-group {
   margin-top: 2rem;
 }
 
-.toggle-genres-btn {
+.toggle-genres-btn, .toggle-authors-btn {
   width: 100%;
   padding: 0.7rem 1rem;
   background-color: rgba(77, 155, 240, 0.2);
@@ -157,57 +157,118 @@
   transition: all 0.3s;
 }
 
-.toggle-genres-btn:hover {
+.toggle-genres-btn:hover, .toggle-authors-btn:hover {
   background-color: rgba(77, 155, 240, 0.3);
 }
 
-.genre-select {
+.search-info {
+  color: #aaa;
+  font-size: 0.7rem;
+  margin-top: 5px;
+  font-style: italic;
+  text-align: right;
+}
+
+.checkbox-container {
   margin-top: 1rem;
-  width: 100%;
-  height: 150px;
+  max-height: 200px;
+  overflow-y: auto;
   background-color: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 5px;
-  color: #fff;
   padding: 0.5rem;
 }
 
-.genre-select option {
+.checkbox-item {
+  display: flex;
+  align-items: center;
   padding: 0.5rem;
-  background-color: #2a2a3a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.genre-select option:hover, 
-.genre-select option:checked {
-  background-color: #4d9bf0;
+.checkbox-item:last-child {
+  border-bottom: none;
 }
 
-.selected-genres {
+.checkbox-item input[type="checkbox"] {
+  width: auto;
+  margin-right: 10px;
+  cursor: pointer;
+  accent-color: #4d9bf0;
+}
+
+.checkbox-item label {
+  flex: 1;
+  margin-bottom: 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.selected-genres, .selected-authors {
   margin-top: 1rem;
 }
 
-.selected-genres p {
+.selected-genres p, .selected-authors p {
   color: #ccc;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
-.genre-tags {
+.genre-tags, .author-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.genre-tag {
+.genre-tag, .author-tag {
   background-color: rgba(77, 155, 240, 0.2);
   color: #4d9bf0;
   padding: 0.3rem 0.8rem;
   border-radius: 20px;
   font-size: 0.8rem;
   display: inline-block;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-/* Responsive styles */
+.genre-tag:hover, .author-tag:hover {
+  background-color: rgba(77, 155, 240, 0.4);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.author-tag {
+  background-color: rgba(118, 77, 240, 0.2);
+  color: #9d76fa;
+}
+
+.author-tag:hover {
+  background-color: rgba(118, 77, 240, 0.4);
+}
+
+.no-results {
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Styles pour la recherche dans les listes */
+.search-input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Styles responsive */
 @media (max-width: 768px) {
   .auth-card {
     padding: 1.5rem;
@@ -215,5 +276,9 @@
   
   .auth-container {
     padding: 1rem;
+  }
+
+  .checkbox-container {
+    max-height: 150px;
   }
 } 

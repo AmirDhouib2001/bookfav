@@ -82,9 +82,11 @@ const Header: React.FC = () => {
         <Link to="/catalogue" className={isActive('/catalogue')}>
           Catalogue
         </Link>
-        <Link to="/dashboard" className={isActive('/dashboard')}>
-          Dashboard
-        </Link>
+        {isAuthenticated && (
+          <Link to="/dashboard" className={isActive('/dashboard')}>
+            Dashboard
+          </Link>
+        )}
       </nav>
       
       <div className="auth-section">

@@ -194,7 +194,7 @@ def search_books():
         # Appliquer les filtres de recherche si fournis
         if query:
             book_query = book_query.filter(
-                (Book.title.ilike(f'%{query}%')) | 
+            (Book.title.ilike(f'%{query}%')) | 
                 (Book.author.ilike(f'%{query}%')) |
                 (Book.genre.ilike(f'%{query}%')) |
                 (Book.description.ilike(f'%{query}%'))
@@ -281,3 +281,167 @@ def get_genres():
     except Exception as e:
         print(f"Erreur lors de la récupération des genres: {str(e)}")
         return jsonify({"error": "Une erreur est survenue lors de la récupération des genres"}), 500
+
+@books_bp.route("/authors", methods=["GET"])
+def get_authors():
+    """Récupère la liste des 100 auteurs les plus fréquents dans la base de données."""
+    try:
+        # Récupérer les 100 auteurs les plus fréquents
+        authors_query = db.session.query(
+            Book.author, 
+            func.count(Book.author).label('author_count')
+        ).group_by(
+            Book.author
+        ).having(
+            Book.author.isnot(None)
+        ).order_by(
+            func.count(Book.author).desc()
+        ).limit(100).all()
+        
+        # Extraire les valeurs d'auteur des tuples renvoyés par la requête
+        author_list = [author[0] for author in authors_query if author[0]]
+        
+        print(f"Nombre d'auteurs récupérés: {len(author_list)}")
+        
+        return jsonify(author_list)
+    except Exception as e:
+        print(f"Erreur lors de la récupération des auteurs: {str(e)}")
+        return jsonify({"error": "Une erreur est survenue lors de la récupération des auteurs"}), 500
+
+@books_bp.route("/recommendations", methods=["GET"])
+def get_recommendations():
+    """Récupère des recommandations personnalisées pour l'utilisateur."""
+    try:
+        print("=== DÉBUT ENDPOINT RECOMMENDATIONS ===")
+        
+        # Récupération de l'ID de session depuis les headers
+        session_id = request.headers.get('X-Session-ID')
+        print(f"Session ID reçu: {session_id}")
+        
+        if not session_id:
+            print("Pas de session ID, retour de livres populaires")
+            return get_popular_books()
+        
+        # Validation de la session
+        from app.models import UserSession, AuthUser
+        session = UserSession.get_by_session_id(session_id)
+        print(f"Session trouvée: {session is not None}")
+        
+        if not session:
+            print("Session invalide, retour de livres populaires")
+            return get_popular_books()
+        
+        # Récupération de l'utilisateur
+        user = AuthUser.query.get(session.user_id)
+        print(f"Utilisateur trouvé: {user.username if user else 'None'}")
+        
+        if not user:
+            print("Utilisateur non trouvé, retour de livres populaires")
+            return get_popular_books()
+        
+        # Récupérer les genres et auteurs préférés
+        favorite_genres = user.favorite_genres or []
+        favorite_authors = user.favorite_authors or []
+        print(f"Genres préférés: {favorite_genres}")
+        print(f"Auteurs préférés: {favorite_authors}")
+        
+        # Si l'utilisateur n'a pas de préférences, retourner des livres populaires
+        if not favorite_genres and not favorite_authors:
+            print("Pas de préférences utilisateur, retour de livres populaires")
+            return get_popular_books()
+        
+        # Construire la requête basée sur les préférences
+        query = Book.query
+        conditions = []
+        
+        # Ajouter les conditions pour les genres
+        if favorite_genres:
+            for genre in favorite_genres:
+                conditions.append(Book.genre.ilike(f'%{genre}%'))
+        
+        # Ajouter les conditions pour les auteurs
+        if favorite_authors:
+            for author in favorite_authors:
+                conditions.append(Book.author.ilike(f'%{author}%'))
+        
+        print(f"Nombre de conditions: {len(conditions)}")
+        
+        # Appliquer les conditions avec OR
+        if conditions:
+            query = query.filter(or_(*conditions))
+        
+        # Récupérer les recommandations (limité à 20)
+        recommended_books = query.limit(20).all()
+        print(f"Livres trouvés avec préférences: {len(recommended_books)}")
+        
+        # Si pas assez de recommandations, compléter avec des livres populaires
+        if len(recommended_books) < 10:
+            popular_books = Book.query.limit(20 - len(recommended_books)).all()
+            print(f"Livres populaires ajoutés: {len(popular_books)}")
+            # Éviter les doublons
+            existing_isbns = [book.isbn for book in recommended_books]
+            for book in popular_books:
+                if book.isbn not in existing_isbns and len(recommended_books) < 20:
+                    recommended_books.append(book)
+        
+        print(f"Total de livres recommandés: {len(recommended_books)}")
+        
+        # Convertir en format JSON
+        recommendations = []
+        for book in recommended_books:
+            recommendations.append({
+                'isbn': book.isbn,
+                'title': book.title,
+                'author': book.author,
+                'year': book.year,
+                'publisher': book.publisher,
+                'image_url_s': book.image_url_s,
+                'image_url_m': book.image_url_m,
+                'image_url_l': book.image_url_l,
+                'genre': book.genre,
+                'description': book.description
+            })
+        
+        # Prolonger la session
+        session.extend_session(hours=1)
+        
+        print("=== FIN ENDPOINT RECOMMENDATIONS ===")
+        return jsonify(recommendations)
+        
+    except Exception as e:
+        print(f"ERREUR dans recommendations: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return get_popular_books()
+
+def get_popular_books():
+    """Retourne une sélection de livres populaires comme fallback."""
+    try:
+        print("=== DÉBUT GET_POPULAR_BOOKS ===")
+        # Récupérer 20 livres au hasard comme "populaires"
+        books = Book.query.limit(20).all()
+        print(f"Livres populaires trouvés: {len(books)}")
+        
+        recommendations = []
+        for book in books:
+            recommendations.append({
+                'isbn': book.isbn,
+                'title': book.title,
+                'author': book.author,
+                'year': book.year,
+                'publisher': book.publisher,
+                'image_url_s': book.image_url_s,
+                'image_url_m': book.image_url_m,
+                'image_url_l': book.image_url_l,
+                'genre': book.genre,
+                'description': book.description
+            })
+        
+        print("=== FIN GET_POPULAR_BOOKS ===")
+        return jsonify(recommendations)
+        
+    except Exception as e:
+        print(f"Erreur lors de la récupération des livres populaires: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify([]), 500

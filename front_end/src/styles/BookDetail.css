@@ -116,6 +116,163 @@
   background-color: rgba(0, 0, 0, 0.25);
 }
 
+/* Styles pour la notation */
+.book-rating-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  border-left: 4px solid #4d9bf0;
+}
+
+.book-rating-section h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.rating-stats-section {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.rating-stats-section h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.rating-overview {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.average-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 150px;
+}
+
+.rating-number {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #4d9bf0;
+  line-height: 1;
+}
+
+.rating-stars {
+  margin: 0.5rem 0;
+}
+
+.total-ratings {
+  font-size: 0.9rem;
+  color: #aaa;
+  text-align: center;
+}
+
+.rating-distribution {
+  flex: 1;
+}
+
+.rating-distribution h3 {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.rating-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.star-label {
+  width: 60px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.bar-container {
+  flex: 1;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background-color: #4d9bf0;
+  transition: width 0.3s ease;
+}
+
+.rating-count {
+  width: 40px;
+  text-align: right;
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+/* Section des commentaires récents */
+.recent-reviews-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.recent-reviews-section h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.review-item {
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid #4d9bf0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reviewer-info strong {
+  color: #4d9bf0;
+}
+
+.review-date {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.review-text {
+  color: #d0d0d0;
+  line-height: 1.6;
+  margin: 0;
+}
+
 /* Styles responsives */
 @media (max-width: 768px) {
   .book-detail-content {
@@ -134,5 +291,26 @@
   .book-detail-container {
     padding: 1.5rem;
     margin: 1rem;
+  }
+  
+  .rating-overview {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .average-rating {
+    min-width: auto;
+  }
+  
+  .review-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .book-rating-section,
+  .rating-stats-section,
+  .recent-reviews-section {
+    padding: 1rem;
   }
 } 

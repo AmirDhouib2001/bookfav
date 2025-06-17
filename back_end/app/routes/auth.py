@@ -36,6 +36,10 @@ def register():
         # Enregistrement des genres préférés si fournis
         if 'favorite_genres' in data and isinstance(data['favorite_genres'], list):
             user.favorite_genres = data['favorite_genres']
+            
+        # Enregistrement des auteurs préférés si fournis
+        if 'favorite_authors' in data and isinstance(data['favorite_authors'], list):
+            user.favorite_authors = data['favorite_authors']
         
         db.session.add(user)
         db.session.commit()
@@ -229,6 +233,9 @@ def update_profile():
             
         if 'favorite_genres' in data and isinstance(data['favorite_genres'], list):
             user.favorite_genres = data['favorite_genres']
+            
+        if 'favorite_authors' in data and isinstance(data['favorite_authors'], list):
+            user.favorite_authors = data['favorite_authors']
             
         # Mise à jour du mot de passe si fourni
         if 'current_password' in data and 'new_password' in data:

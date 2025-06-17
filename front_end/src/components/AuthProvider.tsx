@@ -9,6 +9,7 @@ export interface User {
   profile_image_url?: string;
   role: string;
   favorite_genres?: string[];
+  favorite_authors?: string[];
   created_at?: string;
   last_login?: string;
 }
@@ -16,6 +17,7 @@ export interface User {
 // Interface du contexte d'authentification
 interface AuthContextType {
   user: User | null;
+  sessionId: string | null;
   isAuthenticated: boolean;
   loading: boolean;
   login: (sessionId: string, userData: User) => void;
@@ -26,6 +28,7 @@ interface AuthContextType {
 // Création du contexte avec une valeur par défaut
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  sessionId: null,
   isAuthenticated: false,
   loading: true,
   login: () => {},
@@ -42,17 +45,19 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   
   // Fonction pour se connecter - version améliorée avec gestion synchrone
-  const login = (sessionId: string, userData: User) => {
+  const login = (sessionIdParam: string, userData: User) => {
     try {
       // Stocker les données dans localStorage
-      localStorage.setItem('session_id', sessionId);
+      localStorage.setItem('session_id', sessionIdParam);
       localStorage.setItem('user', JSON.stringify(userData));
       
       // Mettre à jour l'état immédiatement
       setUser(userData);
+      setSessionId(sessionIdParam);
       
       // Si nous étions en chargement, mettre fin à l'état de chargement
       if (loading) {
@@ -92,6 +97,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.removeItem('session_id');
     localStorage.removeItem('user');
     setUser(null);
+    setSessionId(null);
     console.log('Utilisateur déconnecté localement');
   };
   
@@ -107,18 +113,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Vérifier la validité de la session au chargement et à intervalles réguliers
   useEffect(() => {
     const validateSession = async () => {
-      const sessionId = localStorage.getItem('session_id');
+      const storedSessionId = localStorage.getItem('session_id');
       const storedUser = localStorage.getItem('user');
       
-      if (!sessionId || !storedUser) {
+      if (!storedSessionId || !storedUser) {
         setLoading(false);
         return;
       }
       
       try {
-        // Définir l'utilisateur immédiatement à partir du localStorage
+        // Définir l'utilisateur et sessionId immédiatement à partir du localStorage
         // pour éviter le flash de l'interface non authentifiée
         setUser(JSON.parse(storedUser));
+        setSessionId(storedSessionId);
         
         // Obtenir l'URL de l'API depuis les variables d'environnement
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
@@ -128,7 +135,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ session_id: sessionId })
+          body: JSON.stringify({ session_id: storedSessionId })
         });
         
         const data = await response.json();
@@ -136,12 +143,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (response.ok && data.valid) {
           // Mettre à jour avec les données fraîches du serveur
           setUser(data.user);
+          setSessionId(storedSessionId);
           console.log('Session validée côté serveur');
         } else {
           // Session invalide, déconnecter l'utilisateur
           localStorage.removeItem('session_id');
           localStorage.removeItem('user');
           setUser(null);
+          setSessionId(null);
           console.log('Session invalide, déconnexion');
         }
       } catch (error) {
@@ -185,6 +194,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Valeur du contexte
   const value = {
     user,
+    sessionId,
     isAuthenticated: !!user,
     loading,
     login,

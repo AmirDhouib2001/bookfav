@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/AuthProvider';
 import '../styles/Auth.css';
@@ -11,6 +11,7 @@ interface RegisterFormData {
   confirmPassword: string;
   full_name?: string;
   favorite_genres?: string[];
+  favorite_authors?: string[];
 }
 
 interface RegisterError {
@@ -29,16 +30,23 @@ const Register: React.FC = () => {
     password: '',
     confirmPassword: '',
     full_name: '',
-    favorite_genres: []
+    favorite_genres: [],
+    favorite_authors: []
   });
   const [errors, setErrors] = useState<RegisterError>({});
   const [loading, setLoading] = useState<boolean>(false);
   const [genres, setGenres] = useState<string[]>([]);
-  const [showGenreSelect, setShowGenreSelect] = useState<boolean>(false);
+  const [authors, setAuthors] = useState<string[]>([]);
+  const [filteredGenres, setFilteredGenres] = useState<string[]>([]);
+  const [filteredAuthors, setFilteredAuthors] = useState<string[]>([]);
+  const [genreSearch, setGenreSearch] = useState<string>('');
+  const [authorSearch, setAuthorSearch] = useState<string>('');
+  const [showGenres, setShowGenres] = useState<boolean>(false);
+  const [showAuthors, setShowAuthors] = useState<boolean>(false);
   const navigate = useNavigate();
 
   // Récupérer la liste des genres disponibles
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchGenres = async () => {
       try {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
@@ -47,6 +55,7 @@ const Register: React.FC = () => {
           const data = await response.json();
           if (Array.isArray(data)) {
             setGenres(data);
+            setFilteredGenres(data);
           }
         }
       } catch (error) {
@@ -56,6 +65,51 @@ const Register: React.FC = () => {
     
     fetchGenres();
   }, []);
+
+  // Récupérer la liste des auteurs disponibles
+  useEffect(() => {
+    const fetchAuthors = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+        const response = await fetch(`${apiUrl}/books/authors`);
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data)) {
+            setAuthors(data);
+            setFilteredAuthors(data);
+          }
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des auteurs:", error);
+      }
+    };
+    
+    fetchAuthors();
+  }, []);
+
+  // Filtrer les genres en fonction de la recherche
+  useEffect(() => {
+    if (!genreSearch.trim()) {
+      setFilteredGenres(genres);
+    } else {
+      const filtered = genres.filter(genre => 
+        genre.toLowerCase().includes(genreSearch.toLowerCase())
+      );
+      setFilteredGenres(filtered);
+    }
+  }, [genreSearch, genres]);
+
+  // Filtrer les auteurs en fonction de la recherche
+  useEffect(() => {
+    if (!authorSearch.trim()) {
+      setFilteredAuthors(authors);
+    } else {
+      const filtered = authors.filter(author => 
+        author.toLowerCase().includes(authorSearch.toLowerCase())
+      );
+      setFilteredAuthors(filtered);
+    }
+  }, [authorSearch, authors]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -73,16 +127,66 @@ const Register: React.FC = () => {
     }
   };
 
-  const handleGenreChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+  const handleGenreSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGenreSearch(e.target.value);
+  };
+
+  const handleAuthorSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAuthorSearch(e.target.value);
+  };
+
+  const handleGenreChange = (genre: string) => {
+    const currentGenres = [...(formData.favorite_genres || [])];
+    const genreIndex = currentGenres.indexOf(genre);
+    
+    if (genreIndex === -1) {
+      // Ajouter le genre s'il n'est pas déjà sélectionné
+      currentGenres.push(genre);
+    } else {
+      // Retirer le genre s'il est déjà sélectionné
+      currentGenres.splice(genreIndex, 1);
+    }
+    
     setFormData({
       ...formData,
-      favorite_genres: selectedOptions
+      favorite_genres: currentGenres
     });
   };
 
-  const toggleGenreSelect = () => {
-    setShowGenreSelect(!showGenreSelect);
+  const handleAuthorChange = (author: string) => {
+    const currentAuthors = [...(formData.favorite_authors || [])];
+    const authorIndex = currentAuthors.indexOf(author);
+    
+    if (authorIndex === -1) {
+      // Ajouter l'auteur s'il n'est pas déjà sélectionné
+      currentAuthors.push(author);
+    } else {
+      // Retirer l'auteur s'il est déjà sélectionné
+      currentAuthors.splice(authorIndex, 1);
+    }
+    
+    setFormData({
+      ...formData,
+      favorite_authors: currentAuthors
+    });
+  };
+
+  const toggleGenres = () => {
+    setShowGenres(!showGenres);
+    if (!showGenres) {
+      // Réinitialiser la recherche lors de l'ouverture
+      setGenreSearch('');
+      setFilteredGenres(genres);
+    }
+  };
+
+  const toggleAuthors = () => {
+    setShowAuthors(!showAuthors);
+    if (!showAuthors) {
+      // Réinitialiser la recherche lors de l'ouverture
+      setAuthorSearch('');
+      setFilteredAuthors(authors);
+    }
   };
 
   const validate = (): boolean => {
@@ -259,34 +363,104 @@ const Register: React.FC = () => {
             <button 
               type="button" 
               className="toggle-genres-btn"
-              onClick={toggleGenreSelect}
+              onClick={toggleGenres}
             >
-              {showGenreSelect ? "Masquer les genres" : "Choisir vos genres préférés (optionnel)"}
+              {showGenres 
+                ? "Masquer les genres" 
+                : `Choisir vos genres préférés (${genres.length} disponibles)`}
             </button>
             
-            {showGenreSelect && (
-              <select
-                multiple
-                name="favorite_genres"
-                id="favorite_genres"
-                onChange={handleGenreChange}
-                className="genre-select"
-              >
-                {genres.map(genre => (
-                  <option key={genre} value={genre}>
-                    {genre}
-                  </option>
-                ))}
-              </select>
+            {showGenres && (
+              <>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Rechercher un genre..."
+                  value={genreSearch}
+                  onChange={handleGenreSearch}
+                />
+                <div className="checkbox-container">
+                  {filteredGenres.length > 0 ? (
+                    filteredGenres.map(genre => (
+                      <div key={genre} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`genre-${genre}`}
+                          checked={formData.favorite_genres?.includes(genre) || false}
+                          onChange={() => handleGenreChange(genre)}
+                        />
+                        <label htmlFor={`genre-${genre}`}>{genre}</label>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="no-results">Aucun genre trouvé pour "{genreSearch}"</p>
+                  )}
+                </div>
+              </>
             )}
             
-            {showGenreSelect && formData.favorite_genres && formData.favorite_genres.length > 0 && (
+            {showGenres && formData.favorite_genres && formData.favorite_genres.length > 0 && (
               <div className="selected-genres">
-                <p>Genres sélectionnés:</p>
+                <p>Genres sélectionnés ({formData.favorite_genres.length}):</p>
                 <div className="genre-tags">
                   {formData.favorite_genres.map(genre => (
-                    <span key={genre} className="genre-tag">
-                      {genre}
+                    <span key={genre} className="genre-tag" onClick={() => handleGenreChange(genre)}>
+                      {genre} ✕
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <div className="form-group author-group">
+            <button 
+              type="button" 
+              className="toggle-authors-btn"
+              onClick={toggleAuthors}
+            >
+              {showAuthors 
+                ? "Masquer les auteurs" 
+                : `Choisir vos auteurs préférés (${authors.length} disponibles)`}
+            </button>
+            
+            {showAuthors && (
+              <>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Rechercher un auteur..."
+                  value={authorSearch}
+                  onChange={handleAuthorSearch}
+                />
+                <div className="search-info">Liste des auteurs disponibles</div>
+                <div className="checkbox-container">
+                  {filteredAuthors.length > 0 ? (
+                    filteredAuthors.map(author => (
+                      <div key={author} className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          id={`author-${author}`}
+                          checked={formData.favorite_authors?.includes(author) || false}
+                          onChange={() => handleAuthorChange(author)}
+                        />
+                        <label htmlFor={`author-${author}`}>{author}</label>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="no-results">Aucun auteur trouvé pour "{authorSearch}"</p>
+                  )}
+                </div>
+              </>
+            )}
+            
+            {showAuthors && formData.favorite_authors && formData.favorite_authors.length > 0 && (
+              <div className="selected-authors">
+                <p>Auteurs sélectionnés ({formData.favorite_authors.length}):</p>
+                <div className="author-tags">
+                  {formData.favorite_authors.map(author => (
+                    <span key={author} className="author-tag" onClick={() => handleAuthorChange(author)}>
+                      {author} ✕
                     </span>
                   ))}
                 </div>

@@ -67,57 +67,57 @@ const Catalogue: React.FC = () => {
 
   // Fonction pour récupérer les livres
   const fetchBooks = async (page: number, useFilters = false) => {
-    setLoading(true);
-    let successfulFetch = false;
-    let lastError = null;
-    
-    // Essayer chaque URL jusqu'à ce qu'une fonctionne
-    for (const apiUrl of fallbackUrls) {
-      if (successfulFetch) break;
+      setLoading(true);
+      let successfulFetch = false;
+      let lastError = null;
       
-      try {
+      // Essayer chaque URL jusqu'à ce qu'une fonctionne
+      for (const apiUrl of fallbackUrls) {
+        if (successfulFetch) break;
+        
+        try {
         // Déterminer l'URL en fonction de si des filtres sont utilisés
         const url = useFilters 
           ? buildUrl(apiUrl, page, filters)
           : `${apiUrl}/books?page=${page}&per_page=12`;
         
         console.log(`Tentative de récupération des livres depuis: ${url}`);
-        
+          
         const response = await fetch(url);
         console.log(`Statut de la réponse (${url}):`, response.status);
-        
-        if (!response.ok) {
-          throw new Error(`Erreur HTTP: ${response.status}`);
-        }
-        
-        const data = await response.json();
+          
+          if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+          }
+          
+          const data = await response.json();
         console.log(`Données reçues de ${url}:`, data);
-        
-        if (data.books && Array.isArray(data.books)) {
-          setBooks(data.books);
-          setTotalPages(data.pages || 1);
-          setError(null);
-          successfulFetch = true;
-          console.log(`✅ Connexion réussie à ${apiUrl}`);
-        } else if (data.error) {
+          
+          if (data.books && Array.isArray(data.books)) {
+            setBooks(data.books);
+            setTotalPages(data.pages || 1);
+            setError(null);
+            successfulFetch = true;
+            console.log(`✅ Connexion réussie à ${apiUrl}`);
+          } else if (data.error) {
           console.error(`Erreur reçue du serveur (${url}):`, data.error);
-          lastError = `Erreur du serveur: ${data.error}`;
-        } else {
+            lastError = `Erreur du serveur: ${data.error}`;
+          } else {
           console.error(`Format de données incorrect (${url}):`, data);
-          lastError = "Format de données incorrect reçu du serveur";
+            lastError = "Format de données incorrect reçu du serveur";
+          }
+        } catch (err) {
+          console.error(`Erreur lors du chargement des livres depuis ${apiUrl}:`, err);
+          lastError = `Impossible de se connecter à ${apiUrl}`;
         }
-      } catch (err) {
-        console.error(`Erreur lors du chargement des livres depuis ${apiUrl}:`, err);
-        lastError = `Impossible de se connecter à ${apiUrl}`;
       }
-    }
-    
-    if (!successfulFetch) {
-      setError(`Impossible de charger les livres. ${lastError}`);
-    }
-    
-    setLoading(false);
-  };
+      
+      if (!successfulFetch) {
+        setError(`Impossible de charger les livres. ${lastError}`);
+      }
+      
+      setLoading(false);
+    };
 
   // Charger les genres disponibles
   const fetchGenres = async () => {
@@ -290,43 +290,43 @@ const Catalogue: React.FC = () => {
               <p>Résultats de la recherche : {books.length} livre(s) trouvé(s) sur un total de {totalPages * 12}</p>
             ) : null}
           </div>
-          
-          <div className="books-grid">
-            {books.map((book: Book) => (
-              <BookCard
-                key={book.isbn}
-                isbn={book.isbn}
-                title={book.title}
-                author={book.author}
-                year={book.year}
-                publisher={book.publisher}
-                image_url_s={book.image_url_s}
-                image_url_m={book.image_url_m}
-                image_url_l={book.image_url_l}
+      
+      <div className="books-grid">
+        {books.map((book: Book) => (
+          <BookCard
+            key={book.isbn}
+            isbn={book.isbn}
+            title={book.title}
+            author={book.author}
+            year={book.year}
+            publisher={book.publisher}
+            image_url_s={book.image_url_s}
+            image_url_m={book.image_url_m}
+            image_url_l={book.image_url_l}
                 genre={book.genre}
                 description={book.description}
-              />
-            ))}
-          </div>
+          />
+        ))}
+      </div>
+      
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button 
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Précédent
+          </button>
           
-          {totalPages > 1 && (
-            <div className="pagination">
-              <button 
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                Précédent
-              </button>
-              
-              <span>Page {currentPage} sur {totalPages}</span>
-              
-              <button 
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                Suivant
-              </button>
-            </div>
+          <span>Page {currentPage} sur {totalPages}</span>
+          
+          <button 
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Suivant
+          </button>
+        </div>
           )}
         </>
       )}

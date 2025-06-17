@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import StarRating from './StarRating';
 
 export interface BookProps {
   isbn: string;
@@ -13,6 +14,10 @@ export interface BookProps {
   image_url_l: string;
   genre?: string;
   description?: string;
+  rating_stats?: {
+    total_ratings: number;
+    average_rating: number;
+  };
 }
 
 const BookCard: React.FC<BookProps> = ({ 
@@ -25,7 +30,8 @@ const BookCard: React.FC<BookProps> = ({
   image_url_m,
   image_url_l,
   genre,
-  description
+  description,
+  rating_stats
 }) => {
   const [imageError, setImageError] = useState(false);
   const [imageSizeIndex, setImageSizeIndex] = useState(1); // 0=S, 1=M, 2=L
@@ -58,15 +64,37 @@ const BookCard: React.FC<BookProps> = ({
           />
         </div>
         <div className="book-info">
-          <h3>{title}</h3>
-          <p className="author">par {author}</p>
-          <p className="details">
-            <span className="year">{year}</span>
-            <span className="publisher">{publisher}</span>
-          </p>
-          {genre && <p className="genre">Genre: {genre}</p>}
+          <h4>{title}</h4>
+          <p className="author">{author}</p>
+          {genre && <span className="genre">{genre}</span>}
+          <p className="year">{year}</p>
+          <p className="publisher">{publisher}</p>
+          
+          {/* Affichage de la note moyenne si disponible */}
+          {rating_stats && rating_stats.total_ratings > 0 && (
+            <div className="book-rating-info">
+              <StarRating 
+                isbn={isbn}
+                readonly={true}
+                initialRating={Math.round(rating_stats.average_rating)}
+                size="small"
+              />
+              <span className="rating-count">
+                ({rating_stats.total_ratings} avis)
+              </span>
+            </div>
+          )}
         </div>
       </Link>
+      
+      {/* Section interactive de notation (en dehors du Link) */}
+      <div className="book-rating-section">
+        <StarRating 
+          isbn={isbn}
+          showReviewInput={true}
+          size="small"
+        />
+      </div>
     </div>
   );
 };
