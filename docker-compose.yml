@@ -8,6 +8,7 @@ services:
     volumes:
       - ./back_end:/app
       - ./data:/app/data
+      - ./models:/app/models  # Volume pour charger les modèles entraînés
     environment:
       - DATABASE_URL=postgresql://postgres:0000@db:5432/books_db
     depends_on:

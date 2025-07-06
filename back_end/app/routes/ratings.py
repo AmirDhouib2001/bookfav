@@ -1,9 +1,49 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from app.models import UserBookRating, Book, AuthUser, UserSession, db
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
+import sys
+import os
+
+# Importer les services partagés
+try:
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    from shared_services import get_hybrid_service, get_async_retrain_service, initialize_shared_services
+except ImportError as e:
+    print(f"❌ Erreur d'import des services partagés: {e}")
+    get_hybrid_service = None
+    get_async_retrain_service = None
+    initialize_shared_services = None
 
 ratings_bp = Blueprint("ratings", __name__)
+
+def ensure_services_initialized():
+    """S'assure que les services partagés sont initialisés"""
+    if initialize_shared_services:
+        try:
+            flask_app = current_app._get_current_object()
+            initialize_shared_services(flask_app)
+            print("✅ Services partagés initialisés")
+        except Exception as e:
+            print(f"❌ Erreur lors de l'initialisation des services partagés: {str(e)}")
+
+def ensure_models_loaded():
+    """S'assure que les modèles sont chargés"""
+    if get_hybrid_service:
+        try:
+            hybrid_service = get_hybrid_service()
+            if hybrid_service and not hybrid_service.cf_model_loaded:
+                from shared_services import load_shared_models_with_context
+                success = load_shared_models_with_context()
+                if success:
+                    print("✅ Modèles de recommandation chargés (partagés)")
+                else:
+                    print("⚠️ Échec du chargement des modèles partagés")
+        except Exception as e:
+            print(f"❌ Erreur lors du chargement des modèles: {str(e)}")
+
+# Charger les modèles au démarrage
+ensure_models_loaded()
 
 def get_user_from_session():
     """Récupère l'utilisateur à partir de la session"""
@@ -58,13 +98,28 @@ def rate_book():
         
         if existing_rating:
             # Mettre à jour la note existante
+            old_rating = existing_rating.rating
             existing_rating.rating = rating
             existing_rating.review = review
             db.session.commit()
             
+            # 🔄 NOUVEAU : Déclencher le réentraînement asynchrone si la note a changé
+            if old_rating != rating:
+                ensure_services_initialized()
+                async_retrain_service = get_async_retrain_service()
+                if async_retrain_service:
+                    print(f"📊 Note modifiée (User {user.user_id}, Livre {isbn}): {old_rating} → {rating}")
+                    async_retrain_service.trigger_retrain_async(
+                        user_id=user.user_id, 
+                        isbn=isbn, 
+                        old_rating=old_rating, 
+                        new_rating=rating
+                    )
+            
             return jsonify({
                 'message': 'Note mise à jour avec succès',
-                'rating': existing_rating.to_dict()
+                'rating': existing_rating.to_dict(),
+                'retrain_triggered': old_rating != rating and async_retrain_service is not None
             }), 200
         else:
             # Créer une nouvelle note
@@ -78,9 +133,22 @@ def rate_book():
             db.session.add(new_rating)
             db.session.commit()
             
+            # 🔄 NOUVEAU : Déclencher le réentraînement asynchrone pour nouvelle note
+            ensure_services_initialized()
+            async_retrain_service = get_async_retrain_service()
+            if async_retrain_service:
+                print(f"📊 Nouvelle note ajoutée (User {user.user_id}, Livre {isbn}): {rating}")
+                async_retrain_service.trigger_retrain_async(
+                    user_id=user.user_id, 
+                    isbn=isbn, 
+                    old_rating=None, 
+                    new_rating=rating
+                )
+            
             return jsonify({
                 'message': 'Note ajoutée avec succès',
-                'rating': new_rating.to_dict()
+                'rating': new_rating.to_dict(),
+                'retrain_triggered': async_retrain_service is not None
             }), 201
             
     except IntegrityError as e:
@@ -244,4 +312,68 @@ def delete_rating(rating_id):
     except Exception as e:
         db.session.rollback()
         print(f"Erreur lors de la suppression de la note: {str(e)}")
+        return jsonify({'error': f'Erreur serveur: {str(e)}'}), 500
+
+@ratings_bp.route("/retrain/status", methods=["GET"])
+def get_retrain_status():
+    """Récupère le statut du réentraînement asynchrone"""
+    try:
+        # Vérifier l'authentification
+        user, error_response, status_code = get_user_from_session()
+        if error_response:
+            return error_response, status_code
+        
+        # S'assurer que les services partagés sont initialisés
+        ensure_services_initialized()
+        
+        async_retrain_service = get_async_retrain_service()
+        if not async_retrain_service:
+            return jsonify({'error': 'Service de réentraînement non disponible'}), 503
+        
+        status = async_retrain_service.get_status()
+        return jsonify({
+            'retrain_status': status,
+            'service_available': True
+        }), 200
+        
+    except Exception as e:
+        print(f"Erreur lors de la récupération du statut de réentraînement: {str(e)}")
+        return jsonify({'error': f'Erreur serveur: {str(e)}'}), 500
+
+@ratings_bp.route("/retrain/force", methods=["POST"])
+def force_retrain():
+    """Force un réentraînement synchrone (pour les admins)"""
+    try:
+        # Vérifier l'authentification
+        user, error_response, status_code = get_user_from_session()
+        if error_response:
+            return error_response, status_code
+        
+        # Vérifier les permissions (admin uniquement)
+        if not user or user.role != 'admin':
+            return jsonify({'error': 'Permissions insuffisantes'}), 403
+        
+        # S'assurer que les services partagés sont initialisés
+        ensure_services_initialized()
+        
+        async_retrain_service = get_async_retrain_service()
+        if not async_retrain_service:
+            return jsonify({'error': 'Service de réentraînement non disponible'}), 503
+        
+        # Forcer le réentraînement synchrone
+        success = async_retrain_service.force_retrain_sync()
+        
+        if success:
+            return jsonify({
+                'message': 'Réentraînement forcé avec succès',
+                'success': True
+            }), 200
+        else:
+            return jsonify({
+                'error': 'Échec du réentraînement forcé',
+                'success': False
+            }), 500
+            
+    except Exception as e:
+        print(f"Erreur lors du réentraînement forcé: {str(e)}")
         return jsonify({'error': f'Erreur serveur: {str(e)}'}), 500 
