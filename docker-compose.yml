@@ -14,7 +14,9 @@ services:
     depends_on:
       - db
     networks:
-      - bookfav-network
+      - bookfav-public
+      - bookfav-private
+    restart: unless-stopped
 
   frontend:
     build: ./front_end
@@ -28,7 +30,8 @@ services:
     depends_on:
       - backend
     networks:
-      - bookfav-network
+      - bookfav-public
+    restart: unless-stopped
 
   db:
     image: postgres:14
@@ -41,11 +44,28 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - bookfav-network
+      - bookfav-private
+    restart: unless-stopped
 
 networks:
-  bookfav-network:
+  # Réseau public : Frontend ↔ Backend
+  bookfav-public:
     driver: bridge
+    name: bookfav_public_network
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
+          gateway: 172.25.0.1
+  
+  # Réseau privé : Backend ↔ Database
+  bookfav-private:
+    driver: bridge
+    name: bookfav_private_network
+    internal: false  # Permet l'accès internet pour les téléchargements de packages
+    ipam:
+      config:
+        - subnet: 172.26.0.0/16
+          gateway: 172.26.0.1
 
 volumes:
   postgres-data: 

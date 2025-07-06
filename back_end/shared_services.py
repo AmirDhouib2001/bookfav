@@ -116,17 +116,13 @@ class SharedServices:
         if self._flask_app:
             try:
                 with self._flask_app.app_context():
-                    from app.models import Book
-                    books = Book.query.all()
-                    if books:
-                        self._hybrid_service.load_models(books)
-                        logger.info("✅ Modèles chargés avec contexte Flask")
-                        return True
-                    else:
-                        logger.warning("⚠️ Aucun livre trouvé pour charger les modèles")
-                        return False
+                    self._hybrid_service.initialize_with_flask_context()
+                    logger.info("✅ Modèles initialisés avec contexte Flask")
+                    return True
             except Exception as e:
-                logger.error(f"❌ Erreur lors du chargement des modèles avec contexte: {str(e)}")
+                logger.error(f"❌ Erreur lors de l'initialisation des modèles avec contexte: {str(e)}")
+                import traceback
+                traceback.print_exc()
                 return False
         else:
             logger.warning("⚠️ Aucun contexte Flask disponible")

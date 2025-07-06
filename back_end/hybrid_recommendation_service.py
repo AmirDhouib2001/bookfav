@@ -50,6 +50,55 @@ class HybridRecommendationService:
         # Métadonnées
         self.min_ratings_for_cf = 3  # Minimum de ratings pour utiliser CF
         
+        # Essayer de charger le modèle CF immédiatement
+        self._try_load_cf_model()
+    
+    def _try_load_cf_model(self):
+        """
+        Essaie de charger le modèle collaborative filtering au démarrage.
+        """
+        try:
+            cf_model_file = f"{self.cf_model_path}_model.h5"
+            cf_metadata_file = f"{self.cf_model_path}_metadata.pkl"
+            
+            if os.path.exists(cf_model_file) and os.path.exists(cf_metadata_file):
+                logger.info("🔄 Chargement du modèle CF au démarrage...")
+                self.cf_engine.load_model(self.cf_model_path)
+                self.cf_model_loaded = True
+                logger.info("✅ Modèle collaborative filtering chargé au démarrage")
+            else:
+                logger.info("⚠️ Modèle CF non trouvé au démarrage, chargement différé")
+        except Exception as e:
+            logger.error(f"❌ Erreur lors du chargement CF au démarrage: {str(e)}")
+    
+    def initialize_with_flask_context(self):
+        """
+        Initialise les modèles avec un contexte Flask disponible.
+        """
+        try:
+            # Charger le modèle CF s'il n'est pas déjà chargé
+            if not self.cf_model_loaded:
+                self._try_load_cf_model()
+            
+            # Charger le modèle content-based avec les données de la DB
+            if not self.content_model_loaded:
+                from app.models import Book
+                books = Book.query.all()
+                if books:
+                    logger.info(f"🔄 Chargement du modèle content-based avec {len(books)} livres")
+                    self.content_engine.fit(books)
+                    self.content_model_loaded = True
+                    logger.info("✅ Modèle content-based chargé avec succès")
+                else:
+                    logger.warning("⚠️ Aucun livre trouvé pour le modèle content-based")
+                    
+            logger.info(f"📊 État des modèles: CF={self.cf_model_loaded}, Content={self.content_model_loaded}")
+                    
+        except Exception as e:
+            logger.error(f"❌ Erreur lors de l'initialisation avec contexte Flask: {str(e)}")
+            import traceback
+            traceback.print_exc()
+        
     def load_models(self, books_data: Optional[List[Book]] = None):
         """
         Charge les modèles de recommandation.
@@ -61,25 +110,39 @@ class HybridRecommendationService:
         
         # Charger le modèle collaborative filtering
         try:
-            if os.path.exists(f"{self.cf_model_path}_model.h5"):
+            cf_model_file = f"{self.cf_model_path}_model.h5"
+            cf_metadata_file = f"{self.cf_model_path}_metadata.pkl"
+            
+            logger.info(f"Recherche du modèle CF à: {cf_model_file}")
+            logger.info(f"Recherche des métadonnées à: {cf_metadata_file}")
+            
+            if os.path.exists(cf_model_file) and os.path.exists(cf_metadata_file):
+                logger.info("Fichiers du modèle CF trouvés, chargement...")
                 self.cf_engine.load_model(self.cf_model_path)
                 self.cf_model_loaded = True
-                logger.info("Modèle collaborative filtering chargé avec succès")
+                logger.info("✅ Modèle collaborative filtering chargé avec succès")
             else:
-                logger.warning(f"Modèle collaborative filtering non trouvé à {self.cf_model_path}")
+                logger.warning(f"❌ Modèle collaborative filtering non trouvé:")
+                logger.warning(f"  - Modèle h5: {os.path.exists(cf_model_file)}")
+                logger.warning(f"  - Métadonnées pkl: {os.path.exists(cf_metadata_file)}")
         except Exception as e:
-            logger.error(f"Erreur lors du chargement du modèle CF: {str(e)}")
+            logger.error(f"❌ Erreur lors du chargement du modèle CF: {str(e)}")
+            import traceback
+            traceback.print_exc()
         
         # Charger le modèle content-based
         try:
             if books_data:
+                logger.info(f"Chargement du modèle content-based avec {len(books_data)} livres")
                 self.content_engine.fit(books_data)
                 self.content_model_loaded = True
-                logger.info("Modèle content-based chargé avec succès")
+                logger.info("✅ Modèle content-based chargé avec succès")
             else:
-                logger.warning("Aucune donnée de livres fournie pour le content-based filtering")
+                logger.warning("⚠️ Aucune donnée de livres fournie pour le content-based filtering")
         except Exception as e:
-            logger.error(f"Erreur lors du chargement du modèle content-based: {str(e)}")
+            logger.error(f"❌ Erreur lors du chargement du modèle content-based: {str(e)}")
+            import traceback
+            traceback.print_exc()
     
     def get_user_ratings_count(self, user_id: int) -> int:
         """
