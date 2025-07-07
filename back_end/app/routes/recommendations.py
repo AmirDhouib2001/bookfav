@@ -102,12 +102,16 @@ def get_collaborative_recommendations():
         
         # Récupérer les paramètres de la requête
         n_recommendations = request.args.get('count', 10, type=int)
+        min_threshold = request.args.get('min_threshold', 2.5, type=float)
+        
+        print(f"📊 Paramètres CF: count={n_recommendations}, min_threshold={min_threshold}")
         
         # Générer les recommandations collaborative filtering
         hybrid_service = get_hybrid_service()
         raw_recommendations = hybrid_service.get_collaborative_recommendations(
             user_id=user.user_id, 
-            n_recommendations=n_recommendations
+            n_recommendations=n_recommendations,
+            min_rating_threshold=min_threshold
         )
         
         if not raw_recommendations:

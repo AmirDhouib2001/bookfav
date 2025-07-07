@@ -181,7 +181,7 @@ class HybridRecommendationService:
             return []
     
     def get_collaborative_recommendations(self, user_id: int, n_recommendations: int = 20, 
-                                       min_rating_threshold: float = 3.5) -> List[Dict]:
+                                       min_rating_threshold: float = 2.5) -> List[Dict]:
         """
         Génère des recommandations avec collaborative filtering.
         
