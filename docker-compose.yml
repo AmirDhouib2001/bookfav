@@ -8,7 +8,7 @@ services:
     volumes:
       - ./back_end:/app
       - ./data:/app/data
-      - ./models:/app/models  
+      - ./models:/app/models  # Volume pour charger les modèles entraînés
     environment:
       - DATABASE_URL=postgresql://postgres:0000@db:5432/books_db
     depends_on:
@@ -50,20 +50,10 @@ services:
 networks:
   bookfav-public:
     driver: bridge
-    name: bookfav_public_network
-    ipam:
-      config:
-        - subnet: 172.25.0.0/16
-          gateway: 172.25.0.1
-  
+
   bookfav-private:
     driver: bridge
-    name: bookfav_private_network
-    internal: false 
-    ipam:
-      config:
-        - subnet: 172.26.0.0/16
-          gateway: 172.26.0.1
+    internal: false
 
 volumes:
-  postgres-data: 
+  postgres-data:
