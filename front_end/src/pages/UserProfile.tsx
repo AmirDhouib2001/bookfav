@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth, User } from '../components/AuthProvider';
+import { API_URL } from '../utils/api';
 import '../styles/Profile.css';
 
 interface ProfileFormData {
@@ -75,8 +76,7 @@ const UserProfile: React.FC = () => {
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-        const response = await fetch(`${apiUrl}/books/genres`);
+        const response = await fetch(`${API_URL}/books/genres`);
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data)) {
@@ -96,8 +96,7 @@ const UserProfile: React.FC = () => {
   useEffect(() => {
     const fetchAuthors = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-        const response = await fetch(`${apiUrl}/books/authors`);
+        const response = await fetch(`${API_URL}/books/authors`);
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data)) {
@@ -248,7 +247,6 @@ const UserProfile: React.FC = () => {
     setUpdateSuccess(false);
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
       const sessionId = localStorage.getItem('session_id');
       
       if (!sessionId) {
@@ -268,7 +266,7 @@ const UserProfile: React.FC = () => {
         updateData.new_password = formData.new_password;
       }
       
-      const response = await fetch(`${apiUrl}/auth/update-profile`, {
+      const response = await fetch(`${API_URL}/auth/update-profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

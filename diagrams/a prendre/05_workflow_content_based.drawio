@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="5.0" etag="XXX" version="22.1.16" type="device">
+  <diagram name="Workflow Content-Based" id="workflow-content">
+    <mxGraphModel dx="1500" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Titre -->
+        <mxCell id="title" value="Workflow Système Content-Based Filtering" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="370" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Profil utilisateur -->
+        <mxCell id="user-profile" value="PROFIL UTILISATEUR" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="80" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="user-profile-details" value="• Genres préférés (déclarés lors inscription)&#10;• Auteurs favoris (déclarés ou inférés)&#10;• Livres bien notés (rating ≥ 4)&#10;• Patterns de navigation et interactions&#10;• Préférences évolutives" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="user-profile">
+          <mxGeometry y="30" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Métadonnées des livres -->
+        <mxCell id="book-metadata" value="MÉTADONNÉES DES LIVRES" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="80" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="book-metadata-details" value="• Extraction depuis base de données&#10;• Titre + auteur + genre + publisher&#10;• Description détaillée (si disponible)&#10;• Nettoyage et normalisation du texte&#10;• Corpus de ~271,000 livres" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="book-metadata">
+          <mxGeometry y="30" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Vectorisation TF-IDF -->
+        <mxCell id="tfidf" value="VECTORISATION TF-IDF" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e8f5e8;strokeColor=#2e7d32;" vertex="1" parent="1">
+          <mxGeometry x="400" y="250" width="300" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfidf-details" value="• Tokenisation et suppression mots vides&#10;• Calcul TF (Term Frequency)&#10;• Calcul IDF (Inverse Document Frequency)&#10;• Génération vecteurs sparse (max 5000 dimensions)&#10;• N-grammes (1,2) pour expressions&#10;• Normalisation L2 pour comparaison" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="tfidf">
+          <mxGeometry y="30" width="300" height="120" as="geometry" />
+        </mxCell>
+        
+        <!-- Profil vectorisé -->
+        <mxCell id="vectorized-profile" value="CRÉATION PROFIL VECTORISÉ" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;" vertex="1" parent="1">
+          <mxGeometry x="50" y="250" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="vectorized-profile-details" value="• Transformation préférences en texte unifié&#10;• Application du même vectoriseur TF-IDF&#10;• Génération du vecteur profil utilisateur&#10;• Normalisation pour cohérence avec livres&#10;• Gestion des profils incomplets" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="vectorized-profile">
+          <mxGeometry y="30" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Calcul des similarités -->
+        <mxCell id="similarity" value="CALCUL DES SIMILARITÉS" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe0b2;strokeColor=#e65100;" vertex="1" parent="1">
+          <mxGeometry x="225" y="430" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="similarity-details" value="• Produit scalaire: profil × matrice livres&#10;• Calcul vectorisé pour tous livres simultanément&#10;• Génération scores de similarité [0,1]&#10;• Optimisation avec scipy.sparse&#10;• Gestion efficace de la mémoire" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="similarity">
+          <mxGeometry y="30" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Sélection et classement -->
+        <mxCell id="selection" value="SÉLECTION ET CLASSEMENT" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#ad1457;" vertex="1" parent="1">
+          <mxGeometry x="225" y="600" width="300" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="selection-details" value="• Tri des livres par score similarité décroissant&#10;• Filtrage des livres déjà évalués&#10;• Sélection des N meilleurs candidats&#10;• Enrichissement avec métadonnées complètes&#10;• Calcul des scores de confiance" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="selection">
+          <mxGeometry y="30" width="300" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Flèches de connexion -->
+        <mxCell id="arrow1" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="user-profile" target="vectorized-profile">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="350" as="sourcePoint" />
+            <mxPoint x="350" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="arrow2" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="book-metadata" target="tfidf">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="350" as="sourcePoint" />
+            <mxPoint x="650" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="arrow3" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="vectorized-profile" target="similarity">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="200" y="450" as="sourcePoint" />
+            <mxPoint x="250" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="arrow4" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="tfidf" target="similarity">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="650" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="arrow5" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" source="similarity" target="selection">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="350" y="650" as="sourcePoint" />
+            <mxPoint x="400" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Paramètres TF-IDF -->
+        <mxCell id="tfidf-params" value="Paramètres TF-IDF" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#558b2f;" vertex="1" parent="1">
+          <mxGeometry x="750" y="250" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="tfidf-params-details" value="• max_features: 5000&#10;• stop_words: 'english'&#10;• ngram_range: (1,2)&#10;• min_df: 2&#10;• max_df: 0.8&#10;• sublinear_tf: True&#10;• norm: 'l2'" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="tfidf-params">
+          <mxGeometry y="30" width="200" height="120" as="geometry" />
+        </mxCell>
+        
+        <!-- Métriques -->
+        <mxCell id="metrics" value="Métriques de Performance" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#ff8f00;" vertex="1" parent="1">
+          <mxGeometry x="750" y="450" width="200" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="metrics-details" value="• Similarité moyenne: 0.42&#10;• Couverture catalogue: 98.7%&#10;• Genres différents top-10: 4.2&#10;• Temps de calcul: 180ms&#10;• Diversité auteurs: 8.7/10&#10;• Seuil similarité: 0.1" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="metrics">
+          <mxGeometry y="30" width="200" height="120" as="geometry" />
+        </mxCell>
+        
+        <!-- Avantages -->
+        <mxCell id="advantages" value="Avantages du Système" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e0f2f1;strokeColor=#00695c;" vertex="1" parent="1">
+          <mxGeometry x="750" y="80" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="advantages-details" value="• Résout le cold start problem&#10;• Indépendant des ratings&#10;• Explications transparentes&#10;• Diversité des recommandations&#10;• Traitement temps réel&#10;• Scalabilité horizontale" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="advantages">
+          <mxGeometry y="30" width="200" height="110" as="geometry" />
+        </mxCell>
+        
+        <!-- Formules -->
+        <mxCell id="formulas" value="Formules Mathématiques" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#ad1457;" vertex="1" parent="1">
+          <mxGeometry x="575" y="600" width="250" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="formulas-details" value="TF-IDF: tf(t,d) × idf(t,D)&#10;&#10;Similarité cosinus:&#10;cos(θ) = (A · B) / (||A|| × ||B||)&#10;&#10;Score final: max(0, min(1, cos_sim))" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="formulas">
+          <mxGeometry y="30" width="250" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Étapes numérotées -->
+        <mxCell id="step1" value="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="10" y="120" width="30" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="step2" value="2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="360" y="120" width="30" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="step3" value="3" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="360" y="290" width="30" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="step4" value="4" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="10" y="290" width="30" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="step5" value="5" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="185" y="470" width="30" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="step6" value="6" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="185" y="640" width="30" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Exemple concret -->
+        <mxCell id="example" value="Exemple Concret" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="600" width="140" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="example-details" value="Utilisateur aime:&#10;• Genre: Science-fiction&#10;• Auteur: Isaac Asimov&#10;&#10;Recommandation:&#10;• Livre sci-fi similaire&#10;• Score: 0.85&#10;• Justification: Genre" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="example">
+          <mxGeometry y="30" width="140" height="100" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile> 

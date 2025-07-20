@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { BookProps } from '../components/BookCard';
 import StarRating from '../components/StarRating';
+import { API_URL } from '../utils/api';
 import '../styles/BookDetail.css';
 
 interface BookRatingStats {
@@ -37,8 +38,7 @@ const BookDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [imageError, setImageError] = useState<boolean>(false);
   
-  // Obtenir l'URL de l'API depuis les variables d'environnement
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
   
   // Image de remplacement en cas d'erreur
   const placeholderImage = 'https://via.placeholder.com/300x400?text=Pas+d%27image';
@@ -49,7 +49,7 @@ const BookDetail: React.FC = () => {
         setLoading(true);
         
         // Récupérer les détails du livre
-        const bookResponse = await fetch(`${apiUrl}/books/isbn/${isbn}`);
+        const bookResponse = await fetch(`${API_URL}/books/isbn/${isbn}`);
         if (!bookResponse.ok) {
           throw new Error(`Erreur HTTP: ${bookResponse.status}`);
         }
@@ -58,7 +58,7 @@ const BookDetail: React.FC = () => {
         
         // Récupérer les statistiques de notation
         try {
-          const ratingsResponse = await fetch(`${apiUrl}/ratings/book/${isbn}`);
+          const ratingsResponse = await fetch(`${API_URL}/ratings/book/${isbn}`);
           if (ratingsResponse.ok) {
             const ratingsData = await ratingsResponse.json();
             setRatingStats(ratingsData);
@@ -78,12 +78,12 @@ const BookDetail: React.FC = () => {
     if (isbn) {
       fetchBookDetails();
     }
-  }, [isbn, apiUrl]);
+  }, [isbn]);
 
   const handleRatingChange = () => {
     // Recharger les statistiques après qu'un utilisateur ait noté
     if (isbn) {
-      fetch(`${apiUrl}/ratings/book/${isbn}`)
+      fetch(`${API_URL}/ratings/book/${isbn}`)
         .then(response => response.json())
         .then(data => setRatingStats(data))
         .catch(error => console.log('Erreur lors du rechargement des stats:', error));

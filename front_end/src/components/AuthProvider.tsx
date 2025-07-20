@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import { API_URL } from '../utils/api';
 
 // Définition du type d'utilisateur
 export interface User {
@@ -76,10 +77,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     
     if (sessionId) {
       try {
-        // Obtenir l'URL de l'API depuis les variables d'environnement
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-        
-        await fetch(`${apiUrl}/auth/logout`, {
+        await fetch(`${API_URL}/auth/logout`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -127,10 +125,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(JSON.parse(storedUser));
         setSessionId(storedSessionId);
         
-        // Obtenir l'URL de l'API depuis les variables d'environnement
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-        
-        const response = await fetch(`${apiUrl}/auth/validate-session`, {
+        const response = await fetch(`${API_URL}/auth/validate-session`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

@@ -1,0 +1,141 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="27.2.0">
+  <diagram name="Architecture Cloud" id="architecture-cloud">
+    <mxGraphModel dx="1360" dy="793" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Architecture Cloud AWS - Système BookFav" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=18;" parent="1" vertex="1">
+          <mxGeometry x="400" y="20" width="370" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="aws-zone" value="Amazon Web Services (AWS)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#232F3E;strokeColor=#FF9900;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="50" y="80" width="1050" height="790" as="geometry">
+            <mxRectangle x="50" y="80" width="200" height="30" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="niveau-presentation" value="NIVEAU PRÉSENTATION" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="aws-zone" vertex="1">
+          <mxGeometry y="30" width="1050" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="cloudfront" value="AWS CloudFront (CDN)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-presentation" vertex="1">
+          <mxGeometry y="30" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="amplify" value="AWS Amplify" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-presentation" vertex="1">
+          <mxGeometry y="60" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-hosting" value="AWS S3 (Static Hosting)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-presentation" vertex="1">
+          <mxGeometry y="90" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="route53" value="AWS Route 53 (DNS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-presentation" vertex="1">
+          <mxGeometry y="120" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="frontend-details" value="• Application React/TypeScript déployée via Amplify&#xa;• Distribution CloudFront pour CDN global&#xa;• Hébergement statique sur S3&#xa;• Gestion DNS avec Route 53&#xa;• SSL/TLS automatique&#xa;• Déploiement automatique depuis Git" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="niveau-presentation" vertex="1">
+          <mxGeometry y="150" width="1050" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="niveau-application" value="NIVEAU APPLICATION" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="aws-zone" vertex="1">
+          <mxGeometry y="270" width="1050" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="elastic-beanstalk" value="AWS Elastic Beanstalk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-application" vertex="1">
+          <mxGeometry y="30" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2-instances" value="EC2 Instances (Auto Scaling)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-application" vertex="1">
+          <mxGeometry y="60" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="load-balancer" value="Application Load Balancer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-application" vertex="1">
+          <mxGeometry y="90" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cloudwatch" value="CloudWatch (Monitoring)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-application" vertex="1">
+          <mxGeometry y="120" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="backend-details" value="• Application Flask déployée sur Elastic Beanstalk&#xa;• Auto Scaling basé sur la charge CPU/mémoire&#xa;• Load Balancer pour distribution du trafic&#xa;• Monitoring avec CloudWatch&#xa;• Déploiement rolling avec zéro downtime&#xa;• Variables d&#39;environnement sécurisées&#xa;• Intégration avec AWS X-Ray pour le tracing" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="niveau-application" vertex="1">
+          <mxGeometry y="150" width="1050" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="niveau-donnees" value="NIVEAU DONNÉES" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="aws-zone" vertex="1">
+          <mxGeometry y="550" width="1050" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="rds-primary" value="AWS RDS PostgreSQL (Primary)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-donnees" vertex="1">
+          <mxGeometry y="30" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="rds-replica" value="RDS Read Replica" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-donnees" vertex="1">
+          <mxGeometry y="60" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s3-backup" value="S3 (Backups &amp; Models)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-donnees" vertex="1">
+          <mxGeometry y="90" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="parameter-store" value="Systems Manager (Secrets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF9900;strokeColor=#FF4500;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="niveau-donnees" vertex="1">
+          <mxGeometry y="120" width="1050" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="database-details" value="• Base PostgreSQL avec Multi-AZ pour haute disponibilité&#xa;• Read Replicas pour optimiser les performances de lecture&#xa;• Sauvegarde automatique avec snapshots&#xa;• Stockage des modèles ML sur S3&#xa;• Chiffrement au repos et en transit&#xa;• Gestion des secrets avec Systems Manager" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="niveau-donnees" vertex="1">
+          <mxGeometry y="150" width="1050" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="connection-users-cloudfront" value="HTTPS" style="endArrow=block;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=3;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" target="cloudfront" edge="1">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="180" y="857" as="sourcePoint" />
+            <mxPoint x="350" y="830" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="connection-frontend-backend" value="API REST (HTTPS)" style="endArrow=block;startArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" source="niveau-presentation" target="niveau-application" edge="1">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="500" y="350" as="sourcePoint" />
+            <mxPoint x="660" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="connection-backend-database" value="SQL/TLS" style="endArrow=block;startArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" source="niveau-application" target="niveau-donnees" edge="1">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="500" y="570" as="sourcePoint" />
+            <mxPoint x="660" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="az-title" value="Zones de Disponibilité" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="80" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="az-1" value="us-east-1a" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffcccc;strokeColor=#d79b00;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="120" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="az-2" value="us-east-1b" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ccffcc;strokeColor=#82b366;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="160" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="az-3" value="us-east-1c" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ccccff;strokeColor=#6c8ebf;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="200" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-title" value="Coûts Estimés (USD/mois)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="260" width="180" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-amplify" value="Amplify: $15" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="300" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-eb" value="Elastic Beanstalk: $50" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="330" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-rds" value="RDS: $80" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="360" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-s3" value="S3: $10" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="390" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-cloudfront" value="CloudFront: $20" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="420" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cost-total" value="Total: ~$175/mois" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="450" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="security-title" value="Sécurité &amp; Conformité" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=14;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="500" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="security-waf" value="• AWS WAF" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="530" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="security-shield" value="• AWS Shield" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="560" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="security-iam" value="• IAM Roles" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="590" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="security-vpc" value="• VPC Private" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="620" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="security-ssl" value="• SSL/TLS" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=12;" parent="1" vertex="1">
+          <mxGeometry x="1150" y="650" width="70" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

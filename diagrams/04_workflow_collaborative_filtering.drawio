@@ -1,0 +1,130 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36" version="27.2.0">
+  <diagram name="Workflow Collaborative Filtering" id="workflow-cf">
+    <mxGraphModel dx="1360" dy="793" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Workflow Système Collaborative Filtering" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=20;" parent="1" vertex="1">
+          <mxGeometry x="380" y="20" width="380" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="input-data" value="DONNÉES D&#39;ENTRÉE" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;" parent="1" vertex="1">
+          <mxGeometry x="80" y="80" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="input-details" value="• user_id (identifiant utilisateur)&#xa;• Historique des évaluations utilisateur&#xa;• Matrice utilisateur-livre (sparse)&#xa;• Ratings existants (1-5)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="input-data" vertex="1">
+          <mxGeometry y="30" width="300" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="preprocessing" value="PREPROCESSING" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;" parent="1" vertex="1">
+          <mxGeometry x="80" y="240" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="preprocessing-details" value="• Encodage des IDs utilisateur → indices numériques&#xa;• Encodage des ISBN → indices numériques&#xa;• Filtrage des données (users ≥5 ratings, books ≥3)&#xa;• Normalisation des ratings" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="preprocessing" vertex="1">
+          <mxGeometry y="30" width="300" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="embeddings" value="GÉNÉRATION DES EMBEDDINGS" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;" parent="1" vertex="1">
+          <mxGeometry x="80" y="400" width="300" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="embeddings-details" value="• User/Item embeddings pour Matrix Factorization&#xa;• User/Item embeddings pour MLP&#xa;• Dimension: 64 pour chaque embedding&#xa;• Initialisation aléatoire normale" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="embeddings" vertex="1">
+          <mxGeometry y="30" width="300" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="parallel" value="TRAITEMENT PARALLÈLE" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffeb3b;strokeColor=#f57f17;" parent="1" vertex="1">
+          <mxGeometry x="480" y="300" width="600" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="mf-branch" value="BRANCHE MATRIX FACTORIZATION" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e8f5e8;strokeColor=#2e7d32;" parent="parallel" vertex="1">
+          <mxGeometry x="20" y="40" width="250" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="mf-details" value="• Produit scalaire des embeddings&#xa;• user_vec_mf · item_vec_mf&#xa;• Prédiction directe du rating&#xa;• Capture des patterns globaux" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="mf-branch" vertex="1">
+          <mxGeometry y="30" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mlp-branch" value="BRANCHE MLP" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;" parent="parallel" vertex="1">
+          <mxGeometry x="320" y="40" width="260" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="mlp-details" value="• Concatenation des embeddings&#xa;• Couches denses: 128 → 64 → 32&#xa;• Dropout: 30% pour régularisation&#xa;• Fonctions d&#39;activation: ReLU" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="mlp-branch" vertex="1">
+          <mxGeometry y="30" width="260" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mlp-arch" value="Architecture MLP:" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontStyle=1;" parent="parallel" vertex="1">
+          <mxGeometry x="320" y="180" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="mlp-layers" value="Input (128) → Dense(128) → Dropout(0.3) →&#xa;Dense(64) → Dropout(0.3) → Dense(32) →&#xa;Dense(1, linear)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;fontSize=10;" parent="parallel" vertex="1">
+          <mxGeometry x="320" y="200" width="260" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="combination" value="COMBINAISON DES SORTIES" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe0b2;strokeColor=#e65100;" parent="1" vertex="1">
+          <mxGeometry x="480" y="620" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="combination-details" value="• Addition des prédictions: MF_output + MLP_output&#xa;• Activation sigmoid pour normalisation (0-1)&#xa;• Mise à l&#39;échelle vers [1,5]: sigmoid(x) * 4 + 1&#xa;• Prédiction finale du rating" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="combination" vertex="1">
+          <mxGeometry y="30" width="350" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="recommendation" value="GÉNÉRATION RECOMMANDATIONS" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#ad1457;" parent="1" vertex="1">
+          <mxGeometry x="80" y="620" width="350" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="recommendation-details" value="• Prédiction pour tous les livres non-évalués&#xa;• Filtrage des livres déjà notés par l&#39;utilisateur&#xa;• Tri par score de prédiction décroissant&#xa;• Sélection des N meilleurs livres" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="recommendation" vertex="1">
+          <mxGeometry y="30" width="350" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="input-data" target="preprocessing" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="350" as="sourcePoint" />
+            <mxPoint x="350" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow2" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="preprocessing" target="embeddings" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="450" as="sourcePoint" />
+            <mxPoint x="350" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow3" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="embeddings" target="parallel" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="400" y="500" as="sourcePoint" />
+            <mxPoint x="450" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow4" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="parallel" target="combination" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="700" y="650" as="sourcePoint" />
+            <mxPoint x="750" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow5" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" parent="1" source="combination" target="recommendation" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="460" y="720" as="sourcePoint" />
+            <mxPoint x="510" y="670" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="metrics" value="Métriques d&#39;Évaluation" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#558b2f;" parent="1" vertex="1">
+          <mxGeometry x="880" y="620" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="metrics-details" value="• RMSE ≈ 0.85&#xa;• MAE ≈ 0.65&#xa;• Precision@10 ≈ 0.68&#xa;• Temps d&#39;entraînement: 18 min&#xa;• Convergence: 85 époques" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="metrics" vertex="1">
+          <mxGeometry y="30" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="parameters" value="Paramètres du Modèle" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff8e1;strokeColor=#ff8f00;" parent="1" vertex="1">
+          <mxGeometry x="880" y="80" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="parameters-details" value="• Embedding dimension: 64&#xa;• Batch size: 512&#xa;• Learning rate: 0.001&#xa;• Optimizer: Adam&#xa;• Loss function: MSE&#xa;• Epochs: 100&#xa;• Validation split: 20%" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="parameters" vertex="1">
+          <mxGeometry y="30" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="advantages" value="Avantages de l&#39;Approche" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e8f5e8;strokeColor=#2e7d32;" parent="1" vertex="1">
+          <mxGeometry x="560" y="80" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="advantages-details" value="• MF: Robuste sur données sparse&#xa;• MLP: Capture non-linéarités&#xa;• Combinaison: Meilleure précision&#xa;• Embeddings: Représentations riches&#xa;• Scalabilité: Parallélisation GPU" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="advantages" vertex="1">
+          <mxGeometry y="30" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="step1" value="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="40" y="120" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="step2" value="2" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="40" y="280" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="step3" value="3" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="40" y="440" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="step4" value="4" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="440" y="440" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="step5" value="5" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="440" y="660" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="step6" value="6" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ff5722;strokeColor=#d84315;fontStyle=1;fontSize=14;fontColor=#ffffff;" parent="1" vertex="1">
+          <mxGeometry x="40" y="660" width="30" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

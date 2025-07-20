@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="5.0" etag="XXX" version="22.1.16" type="device">
+  <diagram name="Architecture Globale" id="architecture-globale">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Titre -->
+        <mxCell id="title" value="Architecture Globale du Système BookFav" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=18;" vertex="1" parent="1">
+          <mxGeometry x="240" y="20" width="350" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Niveau Présentation -->
+        <mxCell id="niveau-presentation" value="NIVEAU PRÉSENTATION" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="80" width="700" height="150" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="frontend" value="Frontend (React/TypeScript) - AWS Amplify - Port: 5173" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;" vertex="1" parent="niveau-presentation">
+          <mxGeometry x="50" y="40" width="600" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="frontend-details" value="• Interface utilisateur responsive&#10;• Gestion des sessions et authentification&#10;• Affichage des recommandations&#10;• Composants de notation et évaluation" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="niveau-presentation">
+          <mxGeometry x="50" y="80" width="600" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Niveau Application -->
+        <mxCell id="niveau-application" value="NIVEAU APPLICATION" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="50" y="280" width="700" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="backend" value="Backend (Flask) - AWS Elastic Beanstalk - Port: 5001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14;" vertex="1" parent="niveau-application">
+          <mxGeometry x="50" y="40" width="600" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="backend-details" value="• API REST (routes et endpoints)&#10;• Service d'authentification&#10;• Moteur Collaborative Filtering&#10;• Moteur Content-Based Filtering&#10;• Service de réentraînement asynchrone" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="niveau-application">
+          <mxGeometry x="50" y="80" width="600" height="100" as="geometry" />
+        </mxCell>
+        
+        <!-- Niveau Données -->
+        <mxCell id="niveau-donnees" value="NIVEAU DONNÉES" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="50" y="530" width="700" height="150" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="database" value="Base de Données PostgreSQL - AWS RDS - Port: 5432" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=14;" vertex="1" parent="niveau-donnees">
+          <mxGeometry x="50" y="40" width="600" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="database-details" value="• Tables relationnelles&#10;• Contraintes d'intégrité&#10;• Indexes pour optimisation&#10;• Sauvegarde des modèles ML" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="niveau-donnees">
+          <mxGeometry x="50" y="80" width="600" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Connexions -->
+        <mxCell id="connection-frontend-backend" value="HTTP/REST API" style="endArrow=block;startArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;fillColor=#dae8fc;strokeColor=#6c8ebf;" edge="1" parent="1" source="niveau-presentation" target="niveau-application">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="330" y="400" as="sourcePoint" />
+            <mxPoint x="490" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="connection-backend-database" value="SQL/ORM" style="endArrow=block;startArrow=block;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;fillColor=#d5e8d4;strokeColor=#82b366;" edge="1" parent="1" source="niveau-application" target="niveau-donnees">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="330" y="520" as="sourcePoint" />
+            <mxPoint x="490" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Technologies -->
+        <mxCell id="tech-frontend" value="React | TypeScript | Vite | AWS Amplify" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="760" y="120" width="160" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tech-backend" value="Flask | Python | TensorFlow | Scikit-learn | AWS Elastic Beanstalk" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="760" y="350" width="160" height="50" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="tech-database" value="PostgreSQL | AWS RDS | Docker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="760" y="570" width="160" height="30" as="geometry" />
+        </mxCell>
+        
+        <!-- Architecture Docker -->
+        <mxCell id="docker-title" value="Architecture Docker" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="50" y="720" width="130" height="30" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="docker-frontend" value="Container Frontend&#10;Node.js 18&#10;Port: 5173" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="50" y="760" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="docker-backend" value="Container Backend&#10;Python 3.9&#10;Port: 5001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="190" y="760" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="docker-database" value="Container Database&#10;PostgreSQL 14&#10;Port: 5432" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="330" y="760" width="120" height="60" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="docker-volumes" value="Volumes Docker:&#10;• postgres-data&#10;• ./models:/app/models&#10;• ./data:/app/data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="480" y="760" width="160" height="60" as="geometry" />
+        </mxCell>
+        
+        <!-- Réseaux Docker -->
+        <mxCell id="docker-network-public" value="bookfav-public" style="endArrow=none;html=1;rounded=0;strokeWidth=2;fillColor=#dae8fc;strokeColor=#6c8ebf;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="110" y="850" as="sourcePoint" />
+            <mxPoint x="250" y="850" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="docker-network-private" value="bookfav-private" style="endArrow=none;html=1;rounded=0;strokeWidth=2;fillColor=#d5e8d4;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="250" y="870" as="sourcePoint" />
+            <mxPoint x="390" y="870" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile> 

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import BookCard, { BookProps } from '../components/BookCard';
+import { API_URL } from '../utils/api';
 import '../styles/Catalogue.css';
 
 interface Book {
@@ -40,13 +41,9 @@ const Catalogue: React.FC = () => {
     description: ''
   });
 
-  // Obtenir l'URL de l'API depuis les variables d'environnement ou utiliser une valeur par défaut
-  const configuredApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-  
   // URLs de secours à essayer en cas d'échec
   const fallbackUrls = [
-    configuredApiUrl,
-    'http://localhost:5001/api',
+    API_URL,
     'http://127.0.0.1:5001/api'
   ];
 

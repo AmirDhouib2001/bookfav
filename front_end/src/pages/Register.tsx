@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/AuthProvider';
+import { API_URL } from '../utils/api';
 import '../styles/Auth.css';
 
 interface RegisterFormData {
@@ -49,8 +50,7 @@ const Register: React.FC = () => {
   useEffect(() => {
     const fetchGenres = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-        const response = await fetch(`${apiUrl}/books/genres`);
+        const response = await fetch(`${API_URL}/books/genres`);
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data)) {
@@ -70,8 +70,7 @@ const Register: React.FC = () => {
   useEffect(() => {
     const fetchAuthors = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-        const response = await fetch(`${apiUrl}/books/authors`);
+        const response = await fetch(`${API_URL}/books/authors`);
         if (response.ok) {
           const data = await response.json();
           if (Array.isArray(data)) {
@@ -236,10 +235,7 @@ const Register: React.FC = () => {
       // Exclure confirmPassword avant d'envoyer au serveur
       const { confirmPassword, ...submitData } = formData;
       
-      // Obtenir l'URL de l'API depuis les variables d'environnement
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
-      
-      const response = await fetch(`${apiUrl}/auth/register`, {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

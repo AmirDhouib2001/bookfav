@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../components/AuthProvider';
+import { API_URL } from '../utils/api';
 import '../styles/Auth.css';
 
 interface LoginFormData {
@@ -67,9 +68,9 @@ const Login: React.FC = () => {
     
     try {
       // Obtenir l'URL de l'API depuis les variables d'environnement
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+
       
-      const response = await fetch(`${apiUrl}/auth/login`, {
+              const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

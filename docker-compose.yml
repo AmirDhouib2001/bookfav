@@ -4,7 +4,7 @@ services:
   backend:
     build: ./back_end
     ports:
-      - "5001:5000"
+      - 5001:5000
     volumes:
       - ./back_end:/app
       - ./data:/app/data
@@ -21,12 +21,12 @@ services:
   frontend:
     build: ./front_end
     ports:
-      - "5173:5173"
+      - 5173:5173
     volumes:
       - ./front_end:/app
       - /app/node_modules
     environment:
-      - VITE_API_URL=http://localhost:5001/api
+      - VITE_API_URL=http://54.154.165.26:5000/api
     depends_on:
       - backend
     networks:
@@ -36,7 +36,7 @@ services:
   db:
     image: postgres:14
     ports:
-      - "5434:5432"
+      - 5434:5432
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=0000

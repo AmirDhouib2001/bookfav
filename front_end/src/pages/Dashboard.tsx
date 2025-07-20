@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../components/AuthProvider';
 import BookScrollSection from '../components/BookScrollSection';
+import { API_URL } from '../utils/api';
 import '../styles/dashboard.css';
 
 interface Book {
@@ -31,7 +32,6 @@ const Dashboard: React.FC = () => {
       setContentLoading(true);
       setContentError(null);
         
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
         const sessionId = localStorage.getItem('session_id');
         
         const headers: HeadersInit = {
@@ -44,7 +44,7 @@ const Dashboard: React.FC = () => {
           headers['X-Session-ID'] = sessionId;
         }
         
-        const response = await fetch(`${apiUrl}/books/recommendations`, {
+        const response = await fetch(`${API_URL}/books/recommendations`, {
           method: 'GET',
           headers: headers,
           credentials: 'include'
@@ -70,7 +70,6 @@ const Dashboard: React.FC = () => {
       setCollaborativeLoading(true);
       setCollaborativeError(null);
       
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
       const sessionId = localStorage.getItem('session_id');
       
       if (!sessionId) {
@@ -85,7 +84,7 @@ const Dashboard: React.FC = () => {
         'X-Session-ID': sessionId
       };
       
-      const response = await fetch(`${apiUrl}/recommendations/collaborative`, {
+      const response = await fetch(`${API_URL}/recommendations/collaborative`, {
         method: 'GET',
         headers: headers,
         credentials: 'include'

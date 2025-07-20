@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthProvider';
+import { buildApiUrl } from '../utils/api';
 import '../styles/StarRating.css';
 
 interface StarRatingProps {
@@ -41,7 +42,7 @@ const StarRating: React.FC<StarRatingProps> = ({
 
   const fetchUserRating = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/ratings/user/book/${isbn}`, {
+      const response = await fetch(buildApiUrl(`ratings/user/book/${isbn}`), {
         headers: {
           'X-Session-ID': sessionId || '',
           'Content-Type': 'application/json'
@@ -105,8 +106,9 @@ const StarRating: React.FC<StarRatingProps> = ({
         review: newReview
       };
       
+      const apiUrl = buildApiUrl('ratings/rate');
       console.log('📤 Envoi de la requête:', {
-        url: 'http://localhost:5001/api/ratings/rate',
+        url: apiUrl,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +117,7 @@ const StarRating: React.FC<StarRatingProps> = ({
         body: requestBody
       });
 
-      const response = await fetch('http://localhost:5001/api/ratings/rate', {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
